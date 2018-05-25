@@ -39,17 +39,11 @@ public abstract class BaseConsumer extends AsyncTaskProcesser implements Initial
 	private String kafkaPort;
 	
 	private String kafkaServer;
-
 	
-	
-	@Autowired
-	@Qualifier("baseProducer")
-	private BaseProducer baseProducer;
-
-	public BaseConsumer(String groupId, String topicName, String kafkaIp, String kafkaPort, String kafkaServer) {
+	public BaseConsumer(String topicName, String groupId,String kafkaIp, String kafkaPort, String kafkaServer) {
 		super();
-		this.groupId = groupId;
 		this.topicName = topicName;
+		this.groupId = groupId;
 		this.kafkaIp = kafkaIp;
 		this.kafkaPort = kafkaPort;
 		this.kafkaServer = kafkaServer;
