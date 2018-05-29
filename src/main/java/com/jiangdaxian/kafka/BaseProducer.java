@@ -2,7 +2,6 @@ package com.jiangdaxian.kafka;
 
 import java.util.Properties;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.kafka.clients.producer.Callback;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
@@ -13,7 +12,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 
 import com.alibaba.fastjson.JSONObject;
-import com.jiangdaxian.kafka.dto.MessageDto;
 import com.jiangdaxian.kafka.dto.MessageVo;
 
 /**
@@ -22,7 +20,7 @@ import com.jiangdaxian.kafka.dto.MessageVo;
  * @author jdx
  *
  */
-public class BaseProducer implements InitializingBean {
+public class BaseProducer<T> implements InitializingBean {
 	private static final Logger LOGGER = LoggerFactory.getLogger(BaseProducer.class);
 
 	private String kafkaIp;
@@ -68,9 +66,9 @@ public class BaseProducer implements InitializingBean {
 		props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
 	}
 
-	public void send(String topicName, MessageDto dto) {
+	public void send(String topicName, T t) {
 		Producer<String, String> producer = null;
-		if (dto == null) {
+		if (t == null) {
 			return;
 		}
 
@@ -78,7 +76,7 @@ public class BaseProducer implements InitializingBean {
 
 		try {
 			producer = new KafkaProducer<String, String>(props);
-			String info = JSONObject.toJSONString(dto);
+			String info = JSONObject.toJSONString(t);
 			producer.send(new ProducerRecord<String, String>(kafkaTopicName, null, info), new Callback() {
 				public void onCompletion(RecordMetadata metadata, Exception ex) {
 					if (ex != null) {
@@ -111,9 +109,9 @@ public class BaseProducer implements InitializingBean {
 		}
 	}
 
-	public void send(MessageVo messageVo, MessageDto dto) {
+	public void send(MessageVo messageVo, T t) {
 		if (messageVo != null) {
-			send(messageVo.getTopicName(), dto);
+			send(messageVo.getTopicName(), t);
 		}
 	}
 }

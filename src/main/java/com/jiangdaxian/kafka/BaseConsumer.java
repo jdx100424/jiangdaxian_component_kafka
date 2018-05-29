@@ -27,7 +27,7 @@ import com.jiangdaxian.kafka.util.KafkaUtil;
  * @author jdx
  *
  */
-public abstract class BaseConsumer extends AsyncTaskProcesser implements InitializingBean {
+public abstract class BaseConsumer<T extends Object> extends AsyncTaskProcesser implements InitializingBean {
 	private static final Logger LOGGER = LoggerFactory.getLogger(BaseConsumer.class);
 	// 组ID
 	private String groupId;
@@ -40,8 +40,11 @@ public abstract class BaseConsumer extends AsyncTaskProcesser implements Initial
 	
 	private String kafkaServer;
 	
+	private Class<T> cls;
+	
 	public BaseConsumer(String topicName, String groupId,String kafkaIp, String kafkaPort, String kafkaServer) {
 		super();
+		cls = (Class <T>)((java.lang.reflect.ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
 		this.topicName = topicName;
 		this.groupId = groupId;
 		this.kafkaIp = kafkaIp;
@@ -115,7 +118,7 @@ public abstract class BaseConsumer extends AsyncTaskProcesser implements Initial
 			public void run() {
 				try {
 					String receiveStr = record.value();
-					MessageDto dto = JSONObject.parseObject(receiveStr, MessageDto.class);
+					T dto = JSONObject.parseObject(receiveStr, cls);
 					onMessage(dto);
 				} catch (Exception e) {
 					LOGGER.error(e.getMessage(), e);
@@ -131,5 +134,5 @@ public abstract class BaseConsumer extends AsyncTaskProcesser implements Initial
 	 * 
 	 * @param dto
 	 */
-	public abstract void onMessage(MessageDto dto);
+	public abstract void onMessage(T t);
 }
