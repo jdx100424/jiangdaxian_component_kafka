@@ -85,7 +85,7 @@ public abstract class BaseConsumer<T extends Object> extends AsyncTaskProcesser 
 			public void run() {
 				// 等待服务完全启动后再消费消息
 				LOGGER.info("{},kafka启动线程，进行服务完全启动等待start：{}", Thread.currentThread().getName(), new Date());
-				ServerLauncherStatus.get().waitStarted();
+				//ServerLauncherStatus.get().waitStarted();
 				LOGGER.info("{},kafka启动线程，进行服务完全启动等待end：{}", Thread.currentThread().getName(), new Date());
 
 				while (true) {
