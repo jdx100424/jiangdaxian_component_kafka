@@ -77,6 +77,7 @@ public class BaseProducer<T> implements InitializingBean {
 		try {
 			producer = new KafkaProducer<String, String>(props);
 			String info = JSONObject.toJSONString(t);
+			LOGGER.info("send kafka info topicName:{},values:{}",topicName,info);
 			producer.send(new ProducerRecord<String, String>(kafkaTopicName, null, info), new Callback() {
 				public void onCompletion(RecordMetadata metadata, Exception ex) {
 					if (ex != null) {
